@@ -1,8 +1,7 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const Schema = require("./schema");
-const axios = require("axios");
-const sharp = require("sharp");
+const express = require('express');
+const bodyParser = require('body-parser');
+const Schema = require('./schema');
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,15 +14,9 @@ const config3 = {
   }
 };
 
-
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
-
-const genderDetect = gender => {
-  if (gender.type === 'M') { return 'Male'; }
-  if (gender.type === 'F') { return 'Female'; }
-};
 
 const getKeyWithMaxValue = data => {
   const max = Math.max(...Object.values(data));
@@ -35,14 +28,12 @@ const ethnicityDetect = data => {
   return getKeyWithMaxValue(newData);
 };
 
-
-
 app.use(bodyParser.json());
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
   res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
   next();
 });
@@ -50,26 +41,26 @@ app.use((req, res, next) => {
 // RESTful Routes
 // avgAge: attributes.age, gender: attributes.gender
 // Face management
-app.get("/faces", (req, res) => {
+app.get('/faces', (req, res) => {
   Schema.find({}, (err, prod) => {
-    console.log(prod);
+    // console.log(prod);
     res.json(prod);
-  })
+  });
 });
-app.post("/faces", (req, res) => {
-  Schema.findOne({id: req.body.id}, (err, prod) => {
+app.post('/faces', (req, res) => {
+  Schema.findOne({ id: req.body.id }, (err, prod) => {
     const body = req.body;
     const attributes = body.face.faceAttributes;
     console.log(err, prod);
     if (prod) {
       // Face exists
 
-      prod.set("avgAge", (prod.avgAge*prod.count + attributes.age) / (prod.count + 1));
-      prod.set("count", prod.count+1);
+      prod.set('avgAge', (prod.avgAge * prod.count + attributes.age) / (prod.count + 1));
+      prod.set('count', prod.count + 1);
       if (prod.gender === 'N/A') {
-        prod.set("gender", attributes.gender);
+        prod.set('gender', attributes.gender);
       } else if (prod.gender !== attributes.gender) {
-        prod.set("gender", 'N/A');
+        prod.set('gender', 'N/A');
       }
       prod.save();
       res.send(prod.toObject());
@@ -94,17 +85,17 @@ app.post("/faces", (req, res) => {
       //     console.log(`data:image/png;base64,${data.toString('base64')}`);
       //   })
       const rec = body.face.faceRectangle;
-      axios.post('https://api.kairos.com/detect', {image: body.img}, config3)
+      axios.post('https://api.kairos.com/detect', { image: body.img }, config3)
         .then(r => {
           r.data.images[0].faces.forEach(face => {
-            const centerX = face.topLeftX + (face.width/2);
-            const centerY = face.topLeftY + (face.height/2);
+            const centerX = face.topLeftX + (face.width / 2);
+            const centerY = face.topLeftY + (face.height / 2);
             if (centerX > rec.left && centerX < rec.left + rec.width && centerY > rec.top && centerY < rec.top + rec.height) {
               console.log(face);
               const e = ethnicityDetect(face.attributes);
               console.log(e);
               if (e) {
-                Schema.findOne({id: req.body.id}, (er, p) => {
+                Schema.findOne({ id: req.body.id }, (er, p) => {
                   if (!p) {
                     new Schema({
                       id: body.id,
@@ -128,16 +119,15 @@ app.post("/faces", (req, res) => {
               }
             }
             // res.send();
-          })
+          });
           // const e = ethnicityDetect(res.data.images[0].faces.attributes)
-        })
+        });
     }
-  })
-
+  });
 });
 
-app.get("/faces/:id", (req, res) => {
-  Schema.findOne({id: req.params.id}, (err, prod) => {
+app.get('/faces/:id', (req, res) => {
+  Schema.findOne({ id: req.params.id }, (err, prod) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
@@ -145,38 +135,40 @@ app.get("/faces/:id", (req, res) => {
       if (prod) {
         res.send(prod.toObject());
       } else {
-        res.send({error: 'FACE_ID_NOT_FOUND'});
+        res.send({ error: 'FACE_ID_NOT_FOUND' });
       }
     }
   });
 });
 
-app.get("/reset", (req, res) => {
-  // axios.delete('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', {headers: {'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59'}})
-  //   .then(r1 => {
-        axios.put('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', {
-          "name": "sample_list",
-          "userData": "User-provided data attached to the face list."
-        }, {
-          headers: {
-            'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59',
-            'Content-Type': 'application/json'
-          }
-        })
-          .then(r2 => {
-            axios.post('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test/persistedFaces', {
-                "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Steve_Jobs_Headshot_2010-CROP2.jpg/220px-Steve_Jobs_Headshot_2010-CROP2.jpg"
-              }, {
-              headers: {
-                'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59',
-                'Content-Type': 'application/json'
-              }
-            }).then(r3 => {
+app.get('/reset', (req, res) => {
+  axios.delete('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', { headers: { 'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59' } })
+    .then(r1 => {
+      axios.put('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', {
+        'name': 'sample_list',
+        'userData': 'User-provided data attached to the face list.'
+      }, {
+        headers: {
+          'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59',
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(r2 => {
+          axios.post('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test/persistedFaces', {
+            'url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Steve_Jobs_Headshot_2010-CROP2.jpg/220px-Steve_Jobs_Headshot_2010-CROP2.jpg'
+          }, {
+            headers: {
+              'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59',
+              'Content-Type': 'application/json'
+            }
+          }).then(r3 => {
+            Schema.remove({}, (err, prod) => {
               res.send(r3.data);
-            })
-          })
-    //   }
-    // )
+            });
+          });
+        });
+    }
+    );
 });
 
 // // Login

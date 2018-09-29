@@ -3,7 +3,7 @@ import axios from 'axios';
 import './index.css';
 import Webcam from 'react-webcam';
 
-import Chart from "chart.js";
+import Chart from 'chart.js';
 import M from 'materialize-css';
 
 // const config = {
@@ -28,8 +28,8 @@ const genConfig = (key, json = true) => {
       'Ocp-Apim-Subscription-Key': key,
       'Content-Type': json ? 'application/json' : 'application/octet-stream'
     }
-  }
-}
+  };
+};
 
 // const config3 = {
 //   headers: {
@@ -103,7 +103,6 @@ const myArray = [
 
 ];
 
-
 class WebcamCapture extends React.Component {
   setRef = webcam => {
     this.webcam = webcam;
@@ -141,13 +140,13 @@ class WebcamCapture extends React.Component {
                       this.setState({ id: `new user - ${res.data.persistedFaceId}` });
                       console.log(attributes);
                       console.log(`new user - ${res.data.persistedFaceId}`);
-                      axios.post('http://localhost:3001/faces', {id: res.data.persistedFaceId, face: face, img: imageSrc}, {json: true})
+                      axios.post('http://localhost:3001/faces', { id: res.data.persistedFaceId, face: face, img: imageSrc }, { json: true })
                         .then(res => {
                           console.log(res.data);
-                          this.setState({ethnicity: res.data.ethnicity,
+                          this.setState({ ethnicity: res.data.ethnicity,
                             age: res.data.avgAge,
-                            gender: res.data.gender,});
-                        })
+                            gender: res.data.gender });
+                        });
                       // axios.post('https://api.kairos.com/detect', { image: imageSrc }, config3)
                       //   .then(res => {
                       //     const e = ethnicityDetect(res.data.images[0].faces[0].attributes);
@@ -161,18 +160,18 @@ class WebcamCapture extends React.Component {
                   console.log(`known user - ${res.data[0].persistedFaceId}`);
                   axios.get(`http://localhost:3001/faces/${res.data[0].persistedFaceId}`)
                     .then(r => {
-                      const payload = {id: res.data[0].persistedFaceId, face: face};
+                      const payload = { id: res.data[0].persistedFaceId, face: face };
                       if (r.data.error) {
                         payload.img = imageSrc;
                       }
-                      axios.post('http://localhost:3001/faces', payload, {json: true})
+                      axios.post('http://localhost:3001/faces', payload, { json: true })
                         .then(res => {
                           console.log(res.data);
-                          this.setState({ethnicity: res.data.ethnicity,
+                          this.setState({ ethnicity: res.data.ethnicity,
                             age: res.data.avgAge,
-                            gender: res.data.gender,});
-                        })
-                    })
+                            gender: res.data.gender });
+                        });
+                    });
 
                   // axios.post('https://api.kairos.com/detect', {image: imageSrc}, config3)
                   //   .then(res => {
@@ -215,16 +214,13 @@ class WebcamCapture extends React.Component {
   }
 }
 
-
-const color = {"red":"rgb(255, 99, 132)","orange":"rgb(255, 159, 64)","yellow":"rgb(255, 205, 86)","green":"rgb(75, 192, 192)","blue":"rgb(54, 162, 235)","purple":"rgb(153, 102, 255)","grey":"rgb(201, 203, 207)"};
+const color = { 'red': 'rgb(255, 99, 132)', 'orange': 'rgb(255, 159, 64)', 'yellow': 'rgb(255, 205, 86)', 'green': 'rgb(75, 192, 192)', 'blue': 'rgb(54, 162, 235)', 'purple': 'rgb(153, 102, 255)', 'grey': 'rgb(201, 203, 207)' };
 class Dashboard extends Component {
-
-  state = {lastUpdate: Date.now()};
-
+  state = { lastUpdate: Date.now() };
 
   componentDidMount() {
     const genderData = {
-      datasets: [{
+      datasets: [ {
         data: [
           0, 0
         ],
@@ -232,13 +228,13 @@ class Dashboard extends Component {
           color.red, color.blue
         ],
         label: 'Gender'
-      }],
+      } ],
       labels: [
         'Male', 'Female'
       ]
     };
     const ethnicityData = {
-      datasets: [{
+      datasets: [ {
         data: [
           0, 0, 0, 0, 0
         ],
@@ -246,13 +242,13 @@ class Dashboard extends Component {
           color.red, color.yellow, color.green, color.blue
         ],
         label: 'Gender'
-      }],
+      } ],
       labels: [
         'Asian', 'Black', 'Hispanic', 'White'
       ]
     };
     const ageData = {
-      datasets: [{
+      datasets: [ {
         data: [
           0, 0, 0, 0, 0
         ],
@@ -260,12 +256,12 @@ class Dashboard extends Component {
           color.red, color.yellow, color.green, color.blue, color.purple
         ],
         label: 'Gender'
-      }],
+      } ],
       labels: [
         '<18', '18 - 25', '26 - 35', '36 - 50', '>50'
       ]
     };
-    let graphGender = document.getElementById("graphGender");
+    let graphGender = document.getElementById('graphGender');
     this.graphGender = new Chart(graphGender, {
       type: 'pie',
       data: genderData,
@@ -277,10 +273,15 @@ class Dashboard extends Component {
           fontStyle: 500,
           fontSize: 30
         },
+        legend: {
+          labels: {
+            fontColor: '#ddd'
+          }
+        },
         responsive: true
       }
     });
-    let graphAge = document.getElementById("graphAge");
+    let graphAge = document.getElementById('graphAge');
     this.graphAge = new Chart(graphAge, {
       type: 'pie',
       data: ageData,
@@ -292,10 +293,15 @@ class Dashboard extends Component {
           fontStyle: 500,
           fontSize: 30
         },
+        legend: {
+          labels: {
+            fontColor: '#ddd'
+          }
+        },
         responsive: true
       }
     });
-    let graphEthnicity = document.getElementById("graphEthnicity");
+    let graphEthnicity = document.getElementById('graphEthnicity');
     this.graphEthnicity = new Chart(graphEthnicity, {
       type: 'pie',
       data: ethnicityData,
@@ -307,26 +313,30 @@ class Dashboard extends Component {
           fontStyle: 500,
           fontSize: 30
         },
+        legend: {
+          labels: {
+            fontColor: '#ddd'
+          }
+        },
         responsive: true
       }
     });
     this.updateData();
     setInterval(() => {
       this.updateData();
-    }, 1000);
+    }, 1400);
   }
 
   updateData() {
     axios.get('http://localhost:3001/faces')
       .then(res => {
         const faces = res.data;
-        let male=0, female=0;
-        let asian=0, black=0, hispanic=0, white=0;
-        let ages = [0, 0, 0, 0];
+        let male = 0; let female = 0;
+        let asian = 0; let black = 0; let hispanic = 0; let white = 0;
+        let ages = [ 0, 0, 0, 0 ];
         faces.forEach(face => {
           if (new Date(face.firstSeen) > this.state.lastUpdate) {
-            M.toast({html: `New visitor: ${Math.round(face.avgAge)} years old ${face.ethnicity} ${face.gender}`}, 10000);
-
+            M.toast({ html: `New visitor: ${Math.round(face.avgAge)} years old ${face.ethnicity} ${face.gender}` }, 10000);
           }
           switch (face.gender) {
             case 'male':
@@ -357,22 +367,25 @@ class Dashboard extends Component {
             case 'white':
               white++; break;
           }
-        })
+        });
 
         // console.log(this.graphGender.data.datasets[0].data);
-        this.graphGender.data.datasets[0].data= [ male, female];
+        this.graphGender.data.datasets[0].data = [ male, female ];
         this.graphGender.update();
-
 
         this.graphAge.data.datasets[0].data = ages;
         this.graphAge.update();
 
-        this.graphEthnicity.data.datasets[0].data= [ asian, black, hispanic, white];
+        this.graphEthnicity.data.datasets[0].data = [ asian, black, hispanic, white ];
         this.graphEthnicity.update();
 
-        this.setState({lastUpdate: Date.now()})
+        this.setState({ lastUpdate: Date.now() });
+      });
+  }
 
-      })
+  reset = () => {
+    axios.get('http://localhost:3001/reset')
+      .then(res => { console.log(res.data); });
   }
 
   render() {
@@ -386,7 +399,10 @@ class Dashboard extends Component {
               </div>
               <p style={{
                 fontSize: '24px',
-                fontWeight: 'bold', margin: '0 20px'}}>Canada Learning Code - Dashboard</p>
+                fontWeight: 'bold',
+                margin: '0 20px' }}>Canada Learning Code - Dashboard
+                <a className="waves-effect waves-light btn" style={{ marginLeft: '50px' }} onClick={this.reset}>RESET</a>
+              </p>
             </div>
           </div>
         </nav>
@@ -420,9 +436,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {document.location.pathname==='/' ? (
+        {document.location.pathname === '/' ? (
           <WebcamCapture />
-        ) : document.location.pathname==='/dashboard' ? (
+        ) : document.location.pathname === '/dashboard' ? (
           <Dashboard />
         ) : <h1>404 - Page not found</h1>}
       </div>
