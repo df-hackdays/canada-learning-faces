@@ -191,7 +191,7 @@ class WebcamCapture extends React.Component {
     const videoConstraints = {
       width: 1280,
       height: 720,
-      facingMode: 'user'
+      facingMode: 'environment'
     };
 
     return (
@@ -201,6 +201,7 @@ class WebcamCapture extends React.Component {
           ref={this.setRef}
           screenshotFormat="image/jpeg"
           videoConstraints={videoConstraints}
+
           style={{ transform: 'scale(-1, 1)' }}
         />
         <h3>Age: {Math.round(this.state.age)}</h3>
