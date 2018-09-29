@@ -110,7 +110,7 @@ class WebcamCapture extends React.Component {
 
   state = { age: null, ethnicity: null, gender: null, id: null, emotion: null };
   componentDidMount() {
-    setInterval(this.detect, 1200);
+    setInterval(this.detect, 800);
   }
   detect = () => {
     try {
