@@ -127,10 +127,18 @@ class WebcamCapture extends React.Component {
                   this.setState({ id: `known user - ${res.data[0].persistedFaceId}` });
                   console.log(attributes);
                   console.log(`known user - ${res.data[0].persistedFaceId}`);
-                  axios.post('http://localhost:3001/faces', {id: res.data[0].persistedFaceId, face: face, img: imageSrc}, {json: true})
-                    .then(res => {
-                      console.log(res.data);
+                  axios.get(`http://localhost:3001/faces/${res.data[0].persistedFaceId}`)
+                    .then(r => {
+                      const payload = {id: res.data[0].persistedFaceId, face: face};
+                      if (r.data.error) {
+                        payload.img = imageSrc;
+                      }
+                      axios.post('http://localhost:3001/faces', payload, {json: true})
+                        .then(res => {
+                          console.log(res.data);
+                        })
                     })
+
                   // axios.post('https://api.kairos.com/detect', {image: imageSrc}, config3)
                   //   .then(res => {
                   //     const e = ethnicityDetect(res.data.images[0].faces[0].attributes)

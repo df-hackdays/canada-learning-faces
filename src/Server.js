@@ -58,9 +58,15 @@ app.post("/faces", (req, res) => {
     if (prod) {
       // Face exists
 
-
-
-
+      prod.set("avgAge", (prod.avgAge*prod.count + attributes.age) / (prod.count + 1));
+      prod.set("count", prod.count+1);
+      if (prod.gender === 'N/A') {
+        prod.set("gender", attributes.gender);
+      } else if (prod.gender !== attributes.gender) {
+        prod.set("gender", 'N/A');
+      }
+      prod.save();
+      res.send(prod.toObject());
 
       // new Schema({id: req.body.id}).save((err, prod) => {
       //   if (err) {
@@ -103,8 +109,7 @@ app.post("/faces", (req, res) => {
                     console.error(err);
                     res.sendStatus(500);
                   } else {
-                    const face = prod.toObject();
-                    res.send(face);
+                    res.send(prod.toObject());
                   }
                 });
               } else {
@@ -120,14 +125,17 @@ app.post("/faces", (req, res) => {
 
 });
 
-app.get("/face/:id", (req, res) => {
+app.get("/faces/:id", (req, res) => {
   Schema.findOne({id: req.params.id}, (err, prod) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
     } else {
-      const face = prod.toObject();
-      res.send(face);
+      if (prod) {
+        res.send(prod.toObject());
+      } else {
+        res.send({error: 'FACE_ID_NOT_FOUND'});
+      }
     }
   });
 });
