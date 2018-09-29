@@ -345,7 +345,7 @@ class Dashboard extends Component {
     });
 
     let graphEmotion = document.getElementById('graphEmotion');
-    this.graphEmotion = new Chart(graphEthnicity, {
+    this.graphEmotion = new Chart(graphEmotion, {
       type: 'pie',
       data: emotionData,
       options: {
