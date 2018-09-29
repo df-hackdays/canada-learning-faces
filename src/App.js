@@ -110,7 +110,7 @@ class WebcamCapture extends React.Component {
 
   state = { age: null, ethnicity: null, gender: null, id: null, emotion: null };
   componentDidMount() {
-    setInterval(this.detect, 1400);
+    setInterval(this.detect, 1200);
   }
   detect = () => {
     try {
@@ -201,8 +201,6 @@ class WebcamCapture extends React.Component {
           ref={this.setRef}
           screenshotFormat="image/jpeg"
           videoConstraints={videoConstraints}
-
-          style={{ transform: 'scale(-1, 1)' }}
         />
         <h3>Age: {Math.round(this.state.age)}</h3>
         <h3>Gender: {this.state.gender}</h3>
@@ -325,7 +323,7 @@ class Dashboard extends Component {
     this.updateData();
     setInterval(() => {
       this.updateData();
-    }, 1400);
+    }, 500);
   }
 
   updateData() {
