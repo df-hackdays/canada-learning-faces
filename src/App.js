@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import './App.css';
+import './index.css';
 import Webcam from 'react-webcam';
+
+import Chart from "chart.js";
 
 // const config = {
 //   baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
@@ -212,10 +214,166 @@ class WebcamCapture extends React.Component {
   }
 }
 
+
+const color = {"red":"rgb(255, 99, 132)","orange":"rgb(255, 159, 64)","yellow":"rgb(255, 205, 86)","green":"rgb(75, 192, 192)","blue":"rgb(54, 162, 235)","purple":"rgb(153, 102, 255)","grey":"rgb(201, 203, 207)"};
 class Dashboard extends Component {
+
+  state = {ageData: null, ethnicityData: null, genderData: null};
+
+
+  componentDidMount() {
+    const genderData = {
+      datasets: [{
+        data: [
+          0, 0
+        ],
+        backgroundColor: [
+          color.red, color.blue
+        ],
+        label: 'Gender'
+      }],
+      labels: [
+        'Male', 'Female'
+      ]
+    };
+    const ethnicityData = {
+      datasets: [{
+        data: [
+          0, 0, 0, 0, 0
+        ],
+        backgroundColor: [
+          color.red, color.yellow, color.green, color.blue
+        ],
+        label: 'Gender'
+      }],
+      labels: [
+        'Asian', 'Black', 'Hispanic', 'White'
+      ]
+    };
+    let graphGender = document.getElementById("graphGender");
+    this.graphGender = new Chart(graphGender, {
+      type: 'pie',
+      data: genderData,
+      options: {
+        title: {
+          display: true,
+          text: 'Gender',
+          fontColor: '#ddd',
+          fontStyle: 500,
+          fontSize: 30
+        },
+        responsive: true
+      }
+    });
+    let graphAge = document.getElementById("graphAge");
+    this.graphAge = new Chart(graphAge, {
+      type: 'pie',
+      data: null,
+      options: {
+        title: {
+          display: true,
+          text: 'Age',
+          fontColor: '#ddd',
+          fontStyle: 500,
+          fontSize: 30
+        },
+        responsive: true
+      }
+    });
+    let graphEthnicity = document.getElementById("graphEthnicity");
+    this.graphEthnicity = new Chart(graphEthnicity, {
+      type: 'pie',
+      data: ethnicityData,
+      options: {
+        title: {
+          display: true,
+          text: 'Ethnicity',
+          fontColor: '#ddd',
+          fontStyle: 500,
+          fontSize: 30
+        },
+        responsive: true
+      }
+    });
+    this.updateData();
+    setInterval(() => {
+      this.updateData;
+    }, 1000);
+  }
+
+  updateData() {
+    axios.get('http://localhost:3001/faces')
+      .then(res => {
+        const faces = res.data;
+        let male=0, female=0;
+        let asian=0, black=0, hispanic=0, white=0;
+        faces.forEach(face => {
+          switch (face.gender) {
+            case 'male':
+              male++; break;
+            case 'female':
+              female++; break;
+          }
+
+          switch (face.ethnicity) {
+            case 'asian':
+              asian++; break;
+            case 'black':
+              black++; break;
+            case 'hispanic':
+              hispanic++; break;
+            case 'white':
+              white++; break;
+          }
+        })
+
+        // console.log(this.graphGender.data.datasets[0].data);
+        this.graphGender.data.datasets[0].data= [ male, female];
+        this.graphGender.update();
+
+        this.graphEthnicity.data.datasets[0].data= [ asian, black, hispanic, white];
+        this.graphEthnicity.update();
+
+      })
+  }
+
   render() {
     return (
-      <h1>Dashboard</h1>
+      <div className="main">
+        <nav className="nav-extended">
+          <div className="nav-wrapper">
+            <div className="nav-left">
+              <div className="brand-logo">
+                <img className="spin" src="https://cdn.evbuc.com/images/37019559/17632711987/2/logo.png" alt=""/>
+              </div>
+              <p style={{
+                fontSize: '24px',
+                fontWeight: 'bold', margin: '0 20px'}}>Canada Learning Code - Dashboard</p>
+            </div>
+          </div>
+        </nav>
+        <div className="container-wrapper color-container-wrapper">
+          <div className="flex-container">
+            <div className="col">
+              <canvas id="graphGender" />
+            </div>
+            <div className="col">
+              <canvas id="graphAge" />
+            </div>
+          </div>
+          <br />
+          <br />
+          <div className="flex-container">
+            <div className="col-small">
+            </div>
+            <div className="col">
+              <canvas id="graphEthnicity" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     );
   }
 }

@@ -1,5 +1,408 @@
+html {
+  overflow: auto;
+  height: 100%; }
+
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  background-color: #fff;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  height: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  overflow: auto !important;
+  width: 100%;
+  max-width: 100vw; }
+
+h1 {
+  text-align: center;
+  font-size: 3em;
+  color: #fff;
+  font-weight: 500;
+  margin: 1.5rem auto 0.5rem; }
+
+h2 {
+  text-align: center;
+  font-size: 1.8em;
+  color: #ddd;
+  font-weight: 300; }
+
+h3 {
+  font-size: 1.5em;
+  color: #ddd;
+  font-weight: 300; }
+
+h4 {
+  font-size: 1.3em;
+  margin: 0; }
+
+p {
+  white-space: pre-line;
+  margin: 0 0 10px; }
+
+strong {
+  font-weight: 700; }
+
+.no-margin {
+  margin: 0 auto; }
+
+.text-shadow {
+  text-shadow: rgba(0, 0, 0, 0.6) 0 1px 2px; }
+
+.box-shadow {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); }
+
+.main {
+  background-color: #212121; }
+  .main > div {
+    min-height: 100vh; }
+
+.row {
+  margin: 0 auto; }
+
+.section {
+  height: 100vh; }
+
+.master-main {
+  flex: 1 0 auto; }
+
+.content-wrapper {
+  margin-top: 64px; }
+
+.container-wrapper {
+  padding-top: 80px;
+  padding-bottom: 20px;
+  margin: 0 auto;
+  width: 85%; }
+
+.col {
+  width: 50%; }
+
+.col-small {
+  width: 25%; }
+
+.flex-container {
+  display: flex; }
+
+.container-wrapper.color-container-wrapper {
+  background-color: #212121;
+  color: #ddd; }
+
+/* Title Typography */
+.text-title,
+.text-subtitle {
+  text-align: left; }
+  @media only screen and (max-width: 992px) {
+    .text-title,
+    .text-subtitle {
+      text-align: center; } }
+
+.text-center {
+  text-align: center !important; }
+
+.text-right {
+  text-align: right !important; }
+
+.image-container {
+  text-align: center; }
+
+/* Button */
+.btn-primary {
+  background-color: #212121; }
+
+.btn-flat {
+  padding: 0 0.5em;
+  color: #424242;
+  background-color: #444;
+  border-radius: 2px; }
+  .btn-flat:focus {
+    background-color: inherit; }
+
+.waves-effect.waves-teal .waves-ripple {
+  background-color: #424242; }
+
+.modal {
+  max-height: 80%;
+  max-width: 600px; }
+  .modal h3 {
+    margin: 0; }
+  .modal .modal-content {
+    padding: 24px 24px 10px; }
+  .modal .modal-footer {
+    padding: 0 24px 6px;
+    text-align: right;
+    height: inherit; }
+    .modal .modal-footer .btn-flat {
+      float: inherit; }
+  @media only screen and (max-width: 600px) {
+    .modal {
+      top: 0 !important;
+      width: 100%;
+      height: 100%;
+      max-height: inherit; }
+      .modal .modal-content {
+        padding: 2em 1.5em; } }
+
+nav {
+  background-color: #424242;
+  position: fixed;
+  top: 0;
+  z-index: 10; }
+  nav .nav-wrapper {
+    width: 85%;
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between; }
+    @media only screen and (max-width: 600px) {
+      nav .nav-wrapper {
+        width: 95%; } }
+    nav .nav-wrapper .nav-left {
+      display: flex; }
+      nav .nav-wrapper .nav-left > a {
+        margin-right: 15px; }
+    nav .nav-wrapper .brand-logo {
+      position: initial;
+      left: initial;
+      -webkit-transform: initial;
+      transform: initial; }
+      nav .nav-wrapper .brand-logo img {
+        height: 40px;
+        width: 40px;
+        vertical-align: middle; }
+    nav .nav-wrapper ul {
+      padding: 0; }
+    nav .nav-wrapper .breadcrumb-container {
+      flex: 1;
+      padding-left: 1em; }
+    @media only screen and (max-width: 600px) {
+      nav .nav-wrapper .dropdown-menu ul li {
+        padding-top: 0.5em; }
+        nav .nav-wrapper .dropdown-menu ul li a {
+          padding: 0 0.5em; } }
+
+.side-nav {
+  min-width: 250px; }
+  .side-nav .user-view {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(https://monus.domh.ca/img/financial-district.jpg);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat; }
+
+.card {
+  margin: 0.5em 0 1em;
+  border: none; }
+  .card .card-content {
+    padding: 24px 24px 16px;
+    color: #000; }
+    .card .card-content .card-title-container {
+      display: flex;
+      padding: 0 0 12px;
+      text-align: center;
+      flex-flow: column; }
+      .card .card-content .card-title-container .card-title-small {
+        font-weight: 300;
+        margin-bottom: 10px; }
+      .card .card-content .card-title-container .card-title {
+        font-size: 2em;
+        line-height: 2.2em;
+        margin: 0;
+        font-weight: 500;
+        color: #212121; }
+        @media only screen and (max-width: 600px) {
+          .card .card-content .card-title-container .card-title {
+            display: block; } }
+      .card .card-content .card-title-container .card-subtitle {
+        font-weight: 400;
+        margin: 0;
+        line-height: 1.5em;
+        font-size: 1.5em;
+        color: #424242; }
+  .card .card-action {
+    padding: 8px 24px 8px;
+    font-size: 1.5em; }
+    .card .card-action a, .card .card-action button {
+      color: #2196F3 !important;
+      letter-spacing: normal;
+      margin: 0; }
+      .card .card-action a:hover, .card .card-action button:hover {
+        color: #90caf9 !important; }
+
+.card-panel .panel-title {
+  font-weight: 300;
+  margin-bottom: 10px; }
+
+.modal {
+  max-height: 80%;
+  max-width: 600px;
+  z-index: 10000; }
+  .modal h3 {
+    margin: 0; }
+  .modal .modal-content {
+    padding: 24px 24px 10px; }
+  .modal .modal-footer {
+    padding: 0 24px 6px;
+    text-align: right;
+    height: inherit; }
+    .modal .modal-footer .btn-flat {
+      float: inherit;
+      margin-right: 10px;
+      background-color: #eee; }
+  @media only screen and (max-width: 600px) {
+    .modal {
+      top: 0 !important;
+      width: 100%;
+      height: 100%;
+      max-height: inherit; }
+      .modal .modal-content {
+        padding: 2em 1.5em; } }
+
+.input-field {
+  display: flex; }
+  .input-field input, .input-field textarea {
+    font-size: 1em !important; }
+    .input-field input:focus, .input-field input.valid, .input-field textarea:focus, .input-field textarea.valid {
+      border-bottom: 1px solid #212121 !important;
+      box-shadow: 0 1px 0 0 #212121 !important;
+      outline: none !important; }
+    .input-field input.invalid, .input-field textarea.invalid {
+      border-bottom: 1px solid #F44336 !important;
+      box-shadow: 0 1px 0 0 #F44336 !important; }
+  .input-field input {
+    padding: 0 0.5em !important; }
+  .input-field textarea {
+    padding: 0.5em 0.5em 1em; }
+  .input-field label {
+    font-size: 1em;
+    width: 100%;
+    text-align: left;
+    -webkit-transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    transition: 0.2s ease all; }
+    .input-field label:after {
+      font-size: 0.8em; }
+    .input-field label.active {
+      font-size: 0.8em;
+      color: #212121 !important;
+      -webkit-transform: translateY(-110%);
+      transform: translateY(-110%); }
+      .input-field label.active:after {
+        font-size: inherit; }
+    @media only screen and (max-width: 600px) {
+      .input-field label:after {
+        font-size: 0.8em;
+        margin-top: -35px; }
+      .input-field label.active:after {
+        font-size: inherit;
+        margin-top: -10px; } }
+
+.spin {
+  cursor: pointer;
+  -webkit-animation: spinAround 5s linear infinite;
+  -moz-animation: spinAround 5s linear infinite;
+  animation: spinAround 5s linear infinite; }
+
+@-webkit-keyframes spinAround {
+  from {
+    -webkit-transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg); } }
+
+@-moz-keyframes spinAround {
+  from {
+    -moz-transform: rotate(0deg); }
+  to {
+    -moz-transform: rotate(360deg); } }
+
+@keyframes spinAround {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(360deg); } }
+
+.chart-container {
+  position: relative;
+  margin: 1em auto;
+  min-height: 400px; }
+
+.currency-list li {
+  display: inline-block;
+  width: 200px;
+  padding-left: 50px; }
+
+.login-form .modal-title-container,
+.sign-up-form .modal-title-container {
+  display: flex; }
+  .login-form .modal-title-container .brand-logo,
+  .sign-up-form .modal-title-container .brand-logo {
+    margin-right: 15px; }
+  .login-form .modal-title-container .modal-title,
+  .sign-up-form .modal-title-container .modal-title {
+    line-height: 64px;
+    color: #343434; }
+
+.graph-title {
+  margin: 0 auto;
+  display: block;
+  text-align: center;
+  width: max-content;
+  font-size: 1.8em; }
+  .graph-title > * {
+    display: inline-block;
+    margin: 0 7px; }
+  .graph-title .select-wrapper > .caret {
+    color: darkgray; }
+  .graph-title .select-wrapper > input {
+    margin: 0;
+    font-size: 1em; }
+  .graph-title .select-unit > input {
+    width: 150px; }
+  .graph-title .select-limit > input {
+    width: 80px; }
+
+.graph-title.secondary {
+  display: flex;
+  width: 100%;
+  margin: 0 auto 1em; }
+  .graph-title.secondary .select-wrapper {
+    font-size: 0.6em;
+    margin: 0 auto; }
+    .graph-title.secondary .select-wrapper > input {
+      height: 30px;
+      width: 60px; }
+
+.dropdown-content {
+  background-color: #424242;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); }
+  .dropdown-content li > span {
+    color: white; }
+
+.flex-row {
+  display: flex;
+  align-items: center; }
+  .flex-row > button {
+    margin: 0 5px !important;
+    padding: 0 10px;
+    color: #dddddd; }
+  .flex-row input {
+    margin: 0 !important;
+    display: block; }
+    .flex-row input:focus {
+      box-shadow: 0 1px 0 0 lightgray !important;
+      border-bottom: 1px solid lightgray !important; }
+    @media only screen and (min-width: 993px) {
+      .flex-row input {
+        max-width: 180px; } }
+    @media only screen and (max-width: 992px) {
+      .flex-row input {
+        padding-bottom: 10px; } }
+    @media only screen and (max-width: 600px) {
+      .flex-row input {
+        width: 110px !important; } }
+
+table.highlight > tbody > tr:hover {
+  background-color: #333; }
