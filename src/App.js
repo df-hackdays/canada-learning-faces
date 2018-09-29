@@ -235,8 +235,7 @@ class Dashboard extends Component {
         ],
         backgroundColor: [
           color.red, color.blue
-        ],
-        label: 'Gender'
+        ]
       } ],
       labels: [
         'Male', 'Female'
@@ -249,8 +248,7 @@ class Dashboard extends Component {
         ],
         backgroundColor: [
           color.red, color.yellow, color.green, color.blue
-        ],
-        label: 'Gender'
+        ]
       } ],
       labels: [
         'Asian', 'Black', 'Hispanic', 'White'
@@ -264,8 +262,7 @@ class Dashboard extends Component {
         ],
         backgroundColor: [
           color.red, color.yellow, color.blue
-        ],
-        label: 'Gender'
+        ]
       } ],
       labels: [
         'Happy', 'Neutral', 'Sad'
@@ -278,8 +275,7 @@ class Dashboard extends Component {
         ],
         backgroundColor: [
           color.red, color.yellow, color.green, color.blue, color.purple
-        ],
-        label: 'Gender'
+        ]
       } ],
       labels: [
         '<18', '18 - 25', '26 - 35', '36 - 50', '>50'
@@ -307,20 +303,37 @@ class Dashboard extends Component {
     });
     let graphAge = document.getElementById('graphAge');
     this.graphAge = new Chart(graphAge, {
-      type: 'pie',
+      type: 'bar',
       data: ageData,
       options: {
         title: {
           display: true,
-          text: 'Age',
+          text: 'Emotion',
           fontColor: '#ddd',
           fontStyle: 500,
           fontSize: 30
         },
         legend: {
           labels: {
-            fontColor: '#ddd'
-          }
+            fontSize: 1,
+            boxWidth: 0
+          },
+        },
+        scales: {
+          xAxes: [
+            {
+              ticks: {
+                fontColor: '#ddd'
+              }
+            }
+          ],
+          yAxes: [
+            {
+              ticks: {
+                fontColor: '#ddd'
+              }
+            }
+          ]
         },
         responsive: true
       }
@@ -348,7 +361,7 @@ class Dashboard extends Component {
 
     let graphEmotion = document.getElementById('graphEmotion');
     this.graphEmotion = new Chart(graphEmotion, {
-      type: 'pie',
+      type: 'bar',
       data: emotionData,
       options: {
         title: {
@@ -360,8 +373,25 @@ class Dashboard extends Component {
         },
         legend: {
           labels: {
-            fontColor: '#ddd'
-          }
+            fontSize: 1,
+            boxWidth: 0
+          },
+        },
+        scales: {
+          xAxes: [
+            {
+              ticks: {
+                fontColor: '#ddd'
+              }
+            }
+          ],
+          yAxes: [
+            {
+              ticks: {
+                fontColor: '#ddd'
+              }
+            }
+          ]
         },
         responsive: true
       }
