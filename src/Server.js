@@ -41,13 +41,13 @@ app.use((req, res, next) => {
 // RESTful Routes
 // avgAge: attributes.age, gender: attributes.gender
 // Face management
-app.get('/faces', (req, res) => {
+app.get('/api/faces', (req, res) => {
   Schema.find({}, (err, prod) => {
     // console.log(prod);
     res.json(prod);
   });
 });
-app.post('/faces', (req, res) => {
+app.post('/api/faces', (req, res) => {
   Schema.findOne({ id: req.body.id }, (err, prod) => {
     const body = req.body;
     const attributes = body.face.faceAttributes;
@@ -126,7 +126,7 @@ app.post('/faces', (req, res) => {
   });
 });
 
-app.get('/faces/:id', (req, res) => {
+app.get('/api/faces/:id', (req, res) => {
   Schema.findOne({ id: req.params.id }, (err, prod) => {
     if (err) {
       console.error(err);
@@ -141,7 +141,7 @@ app.get('/faces/:id', (req, res) => {
   });
 });
 
-app.get('/reset', (req, res) => {
+app.get('/api/reset', (req, res) => {
   axios.delete('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', { headers: { 'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59' } })
     .then(r1 => {
       axios.put('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', {

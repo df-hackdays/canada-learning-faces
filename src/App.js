@@ -140,7 +140,7 @@ class WebcamCapture extends React.Component {
                       this.setState({ id: `new user - ${res.data.persistedFaceId}` });
                       console.log(attributes);
                       console.log(`new user - ${res.data.persistedFaceId}`);
-                      axios.post('http://localhost/api/faces', { id: res.data.persistedFaceId, face: face, img: imageSrc }, { json: true })
+                      axios.post('/api/faces', { id: res.data.persistedFaceId, face: face, img: imageSrc }, { json: true })
                         .then(res => {
                           console.log(res.data);
                           this.setState({ ethnicity: res.data.ethnicity,
@@ -158,13 +158,13 @@ class WebcamCapture extends React.Component {
                   this.setState({ id: `known user - ${res.data[0].persistedFaceId}` });
                   console.log(attributes);
                   console.log(`known user - ${res.data[0].persistedFaceId}`);
-                  axios.get(`http://localhost/api/faces/${res.data[0].persistedFaceId}`)
+                  axios.get(`/api/faces/${res.data[0].persistedFaceId}`)
                     .then(r => {
                       const payload = { id: res.data[0].persistedFaceId, face: face };
                       if (r.data.error) {
                         payload.img = imageSrc;
                       }
-                      axios.post('http://localhost/api/faces', payload, { json: true })
+                      axios.post('/api/faces', payload, { json: true })
                         .then(res => {
                           console.log(res.data);
                           this.setState({ ethnicity: res.data.ethnicity,
@@ -328,7 +328,7 @@ class Dashboard extends Component {
   }
 
   updateData() {
-    axios.get('http://localhost/api/faces')
+    axios.get('/api/faces')
       .then(res => {
         const faces = res.data;
         let male = 0; let female = 0;
@@ -384,7 +384,7 @@ class Dashboard extends Component {
   }
 
   reset = () => {
-    axios.get('http://localhost/api/reset')
+    axios.get('/api/reset')
       .then(res => { console.log(res.data); });
   }
 
