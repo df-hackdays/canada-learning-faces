@@ -112,7 +112,7 @@ class WebcamCapture extends React.Component {
 
   state = { age: null, ethnicity: null, gender: null, id: null, emotion: null };
   componentDidMount() {
-    setInterval(this.detect, 800);
+    setInterval(this.detect, 1200);
   }
 
 
@@ -382,7 +382,7 @@ class Dashboard extends Component {
         let happy =0; let sad = 0; let neutral = 0;
         faces.forEach(face => {
           if (new Date(face.firstSeen) > this.state.lastUpdate) {
-            M.toast({ html: `New visitor: ${Math.round(face.avgAge)} years old ${face.ethnicity} ${face.gender}` }, 10000);
+            M.toast({ html: `New visitor: ${Math.round(face.avgAge)} years old ${face.ethnicity} ${face.gender}` }, 20000);
           }
           switch (face.gender) {
             case 'male':
