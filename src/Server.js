@@ -98,18 +98,22 @@ app.post("/faces", (req, res) => {
               const e = ethnicityDetect(face.attributes);
               console.log(e);
               if (e) {
-                new Schema({
-                  id: body.id,
-                  avgAge: attributes.age,
-                  gender: attributes.gender,
-                  count: 1,
-                  ethnicity: e
-                }).save((err, prod) => {
-                  if (err) {
-                    console.error(err);
-                    res.sendStatus(500);
-                  } else {
-                    res.send(prod.toObject());
+                Schema.findOne({id: req.body.id}, (er, p) => {
+                  if (!p) {
+                    new Schema({
+                      id: body.id,
+                      avgAge: attributes.age,
+                      gender: attributes.gender,
+                      count: 1,
+                      ethnicity: e
+                    }).save((err, prod) => {
+                      if (err) {
+                        console.error(err);
+                        res.sendStatus(500);
+                      } else {
+                        res.send(prod.toObject());
+                      }
+                    });
                   }
                 });
               } else {
@@ -138,6 +142,34 @@ app.get("/faces/:id", (req, res) => {
       }
     }
   });
+});
+
+app.get("/reset", (req, res) => {
+  // axios.delete('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', {headers: {'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59'}})
+  //   .then(r1 => {
+        axios.put('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test', {
+          "name": "sample_list",
+          "userData": "User-provided data attached to the face list."
+        }, {
+          headers: {
+            'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59',
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(r2 => {
+            axios.post('https://eastus.api.cognitive.microsoft.com/face/v1.0/facelists/test/persistedFaces', {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Steve_Jobs_Headshot_2010-CROP2.jpg/220px-Steve_Jobs_Headshot_2010-CROP2.jpg"
+              }, {
+              headers: {
+                'Ocp-Apim-Subscription-Key': '973045211bfd47df8bda0187fc8bae59',
+                'Content-Type': 'application/json'
+              }
+            }).then(r3 => {
+              res.send(r3.data);
+            })
+          })
+    //   }
+    // )
 });
 
 // // Login

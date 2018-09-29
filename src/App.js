@@ -18,25 +18,9 @@ import Webcam from 'react-webcam';
 //     'Content-Type': 'application/json'
 //   }
 // };
-const genConfig = (json = true) => {
-  const myArray = [
-    'f1711373c0954048a7a38fd93fae576d',
-    'd932db50e00344ee8eb49e9077eb4293',
-
-    '64596df67a534da8bf90526ea75ed126',
-    'b459b3b7b78e491f83cbb3d4fa43585e',
-
-    'd5558af0a57848b3a4d5ee75766383ae',
-    '139abb23cd04411499378600619cb287',
-
-    '4277f54f97dc4644aa540e94af7a2235',
-    'e659f15698164cc78bfcab8fa68ee95b'
-
-  ];
-  const key = myArray[Math.floor(Math.random() * myArray.length)];
-
+const genConfig = (key, json = true) => {
   return {
-    baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
+    baseURL: 'https://eastus.api.cognitive.microsoft.com/face/v1.0',
     headers: {
       'Ocp-Apim-Subscription-Key': key,
       'Content-Type': json ? 'application/json' : 'application/octet-stream'
@@ -99,6 +83,24 @@ const b64ToOctet = (imageSrc) => {
   return blob;
 };
 
+const myArray = [
+  // 'f1711373c0954048a7a38fd93fae576d',
+  // 'd932db50e00344ee8eb49e9077eb4293',
+
+  // '64596df67a534da8bf90526ea75ed126',
+  // 'b459b3b7b78e491f83cbb3d4fa43585e',
+  //
+  // 'd5558af0a57848b3a4d5ee75766383ae',
+  // '139abb23cd04411499378600619cb287',
+  //
+  // '4277f54f97dc4644aa540e94af7a2235',
+  // 'e659f15698164cc78bfcab8fa68ee95b'
+  'bb94c7ae34014db5827fc4c87557a7c6',
+  '973045211bfd47df8bda0187fc8bae59'
+
+];
+
+
 class WebcamCapture extends React.Component {
   setRef = webcam => {
     this.webcam = webcam;
@@ -106,13 +108,14 @@ class WebcamCapture extends React.Component {
 
   state = { age: null, ethnicity: null, gender: null, id: null, emotion: null };
   componentDidMount() {
-    setInterval(this.detect, 1000);
+    setInterval(this.detect, 1400);
   }
   detect = () => {
     try {
       const imageSrc = this.webcam.getScreenshot();
       const octet = b64ToOctet(imageSrc);
-      axios.post('/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,emotion', octet, genConfig(false))
+      const key = myArray[0];
+      axios.post('/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,emotion', octet, genConfig(key, false))
         .then(res => {
           res.data.forEach((face) => {
             const attributes = face.faceAttributes;
@@ -125,12 +128,12 @@ class WebcamCapture extends React.Component {
               'faceListId': 'test',
               'maxNumOfCandidatesReturned': 1,
               'mode': 'matchPerson'
-            }, genConfig())
+            }, genConfig(key))
               .then(res => {
                 if (res.data.length === 0) {
                   // NEW FACE
                   const { left, top, width, height } = face.faceRectangle;
-                  axios.post(`/facelists/test/persistedFaces?targetFace=${left},${top},${width},${height}`, octet, genConfig(false))
+                  axios.post(`/facelists/test/persistedFaces?targetFace=${left},${top},${width},${height}`, octet, genConfig(key, false))
                     .then(res => {
                       this.setState({ id: `new user - ${res.data.persistedFaceId}` });
                       console.log(attributes);
@@ -198,7 +201,7 @@ class WebcamCapture extends React.Component {
           videoConstraints={videoConstraints}
           style={{ transform: 'scale(-1, 1)' }}
         />
-        <h3>Age: {this.state.age}</h3>
+        <h3>Age: {Math.round(this.state.age)}</h3>
         <h3>Gender: {this.state.gender}</h3>
         <h3>ID: {this.state.id}</h3>
         <h3>Emotion: {this.state.emotion}</h3>
