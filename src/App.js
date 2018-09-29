@@ -3,21 +3,46 @@ import axios from 'axios';
 import './App.css';
 import Webcam from 'react-webcam';
 
-const config = {
-  baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
-  headers: {
-    'Ocp-Apim-Subscription-Key': 'b459b3b7b78e491f83cbb3d4fa43585e',
-    'Content-Type': 'application/octet-stream'
-  }
-};
+// const config = {
+//   baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
+//   headers: {
+//     'Ocp-Apim-Subscription-Key': 'b459b3b7b78e491f83cbb3d4fa43585e',
+//     'Content-Type': 'application/octet-stream'
+//   }
+// };
+//
+// const config2 = {
+//   baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
+//   headers: {
+//     'Ocp-Apim-Subscription-Key': 'b459b3b7b78e491f83cbb3d4fa43585e',
+//     'Content-Type': 'application/json'
+//   }
+// };
+const genConfig = (json = true) => {
+  const myArray = [
+    'f1711373c0954048a7a38fd93fae576d',
+    'd932db50e00344ee8eb49e9077eb4293',
 
-const config2 = {
-  baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
-  headers: {
-    'Ocp-Apim-Subscription-Key': 'b459b3b7b78e491f83cbb3d4fa43585e',
-    'Content-Type': 'application/json'
+    '64596df67a534da8bf90526ea75ed126',
+    'b459b3b7b78e491f83cbb3d4fa43585e',
+
+    'd5558af0a57848b3a4d5ee75766383ae',
+    '139abb23cd04411499378600619cb287',
+
+    '4277f54f97dc4644aa540e94af7a2235',
+    'e659f15698164cc78bfcab8fa68ee95b'
+
+  ];
+  const key = myArray[Math.floor(Math.random() * myArray.length)];
+
+  return {
+    baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
+    headers: {
+      'Ocp-Apim-Subscription-Key': key,
+      'Content-Type': json ? 'application/json' : 'application/octet-stream'
+    }
   }
-};
+}
 
 // const config3 = {
 //   headers: {
@@ -81,20 +106,18 @@ class WebcamCapture extends React.Component {
 
   state = { age: null, ethnicity: null, gender: null, id: null, emotion: null };
   componentDidMount() {
-    // setInterval(this.detect, 7000);
+    setInterval(this.detect, 1000);
   }
   detect = () => {
     try {
       const imageSrc = this.webcam.getScreenshot();
       const octet = b64ToOctet(imageSrc);
-      axios.post('/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,emotion', octet, config)
+      axios.post('/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,emotion', octet, genConfig(false))
         .then(res => {
           res.data.forEach((face) => {
             const attributes = face.faceAttributes;
             // console.log(data);
             this.setState({
-              age: attributes.age,
-              gender: attributes.gender,
               emotion: getKeyWithMaxValue(attributes.emotion)
             });
             axios.post('/findsimilars', {
@@ -102,12 +125,12 @@ class WebcamCapture extends React.Component {
               'faceListId': 'test',
               'maxNumOfCandidatesReturned': 1,
               'mode': 'matchPerson'
-            }, config2)
+            }, genConfig())
               .then(res => {
                 if (res.data.length === 0) {
                   // NEW FACE
                   const { left, top, width, height } = face.faceRectangle;
-                  axios.post(`/facelists/test/persistedFaces?targetFace=${left},${top},${width},${height}`, octet, config)
+                  axios.post(`/facelists/test/persistedFaces?targetFace=${left},${top},${width},${height}`, octet, genConfig(false))
                     .then(res => {
                       this.setState({ id: `new user - ${res.data.persistedFaceId}` });
                       console.log(attributes);
@@ -115,6 +138,9 @@ class WebcamCapture extends React.Component {
                       axios.post('http://localhost:3001/faces', {id: res.data.persistedFaceId, face: face, img: imageSrc}, {json: true})
                         .then(res => {
                           console.log(res.data);
+                          this.setState({ethnicity: res.data.ethnicity,
+                            age: res.data.avgAge,
+                            gender: res.data.gender,});
                         })
                       // axios.post('https://api.kairos.com/detect', { image: imageSrc }, config3)
                       //   .then(res => {
@@ -136,6 +162,9 @@ class WebcamCapture extends React.Component {
                       axios.post('http://localhost:3001/faces', payload, {json: true})
                         .then(res => {
                           console.log(res.data);
+                          this.setState({ethnicity: res.data.ethnicity,
+                            age: res.data.avgAge,
+                            gender: res.data.gender,});
                         })
                     })
 
@@ -180,11 +209,23 @@ class WebcamCapture extends React.Component {
   }
 }
 
+class Dashboard extends Component {
+  render() {
+    return (
+      <h1>Dashboard</h1>
+    );
+  }
+}
+
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <WebcamCapture />
+        {document.location.pathname==='/' ? (
+          <WebcamCapture />
+        ) : document.location.pathname==='/dashboard' ? (
+          <Dashboard />
+        ) : <h1>404 - Page not found</h1>}
       </div>
     );
   }
