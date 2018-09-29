@@ -4,6 +4,7 @@ import './index.css';
 import Webcam from 'react-webcam';
 
 import Chart from "chart.js";
+import M from 'materialize-css';
 
 // const config = {
 //   baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
@@ -218,7 +219,7 @@ class WebcamCapture extends React.Component {
 const color = {"red":"rgb(255, 99, 132)","orange":"rgb(255, 159, 64)","yellow":"rgb(255, 205, 86)","green":"rgb(75, 192, 192)","blue":"rgb(54, 162, 235)","purple":"rgb(153, 102, 255)","grey":"rgb(201, 203, 207)"};
 class Dashboard extends Component {
 
-  state = {ageData: null, ethnicityData: null, genderData: null};
+  state = {lastUpdate: Date.now()};
 
 
   componentDidMount() {
@@ -250,6 +251,20 @@ class Dashboard extends Component {
         'Asian', 'Black', 'Hispanic', 'White'
       ]
     };
+    const ageData = {
+      datasets: [{
+        data: [
+          0, 0, 0, 0, 0
+        ],
+        backgroundColor: [
+          color.red, color.yellow, color.green, color.blue, color.purple
+        ],
+        label: 'Gender'
+      }],
+      labels: [
+        '<18', '18 - 25', '26 - 35', '36 - 50', '>50'
+      ]
+    };
     let graphGender = document.getElementById("graphGender");
     this.graphGender = new Chart(graphGender, {
       type: 'pie',
@@ -268,7 +283,7 @@ class Dashboard extends Component {
     let graphAge = document.getElementById("graphAge");
     this.graphAge = new Chart(graphAge, {
       type: 'pie',
-      data: null,
+      data: ageData,
       options: {
         title: {
           display: true,
@@ -297,7 +312,7 @@ class Dashboard extends Component {
     });
     this.updateData();
     setInterval(() => {
-      this.updateData;
+      this.updateData();
     }, 1000);
   }
 
@@ -307,12 +322,29 @@ class Dashboard extends Component {
         const faces = res.data;
         let male=0, female=0;
         let asian=0, black=0, hispanic=0, white=0;
+        let ages = [0, 0, 0, 0];
         faces.forEach(face => {
+          if (new Date(face.firstSeen) > this.state.lastUpdate) {
+            M.toast({html: `New visitor: ${Math.round(face.avgAge)} years old ${face.ethnicity} ${face.gender}`}, 10000);
+
+          }
           switch (face.gender) {
             case 'male':
               male++; break;
             case 'female':
               female++; break;
+          }
+
+          if (face.avgAge < 18) {
+            ages[0]++;
+          } else if (face.avgAge < 25) {
+            ages[1]++;
+          } else if (face.avgAge < 35) {
+            ages[2]++;
+          } else if (face.avgAge < 50) {
+            ages[3]++;
+          } else {
+            ages[4]++;
           }
 
           switch (face.ethnicity) {
@@ -331,8 +363,14 @@ class Dashboard extends Component {
         this.graphGender.data.datasets[0].data= [ male, female];
         this.graphGender.update();
 
+
+        this.graphAge.data.datasets[0].data = ages;
+        this.graphAge.update();
+
         this.graphEthnicity.data.datasets[0].data= [ asian, black, hispanic, white];
         this.graphEthnicity.update();
+
+        this.setState({lastUpdate: Date.now()})
 
       })
   }
