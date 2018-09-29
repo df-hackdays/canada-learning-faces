@@ -79,7 +79,7 @@ class WebcamCapture extends React.Component {
 
   state = { age: null, ethnicity: null, gender: null, id: null, emotion: null };
   componentDidMount() {
-    setInterval(this.detect, 7000);
+    // setInterval(this.detect, 7000);
   }
   detect = () => {
     try {
@@ -87,33 +87,28 @@ class WebcamCapture extends React.Component {
       const octet = b64ToOctet(imageSrc);
       axios.post('https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,emotion', octet, config)
         .then(res => {
-          if (res.data[0]) {
-            const data = res.data[0].faceAttributes;
+          res.data.forEach((face) => {
+            const attributes = face.faceAttributes;
             // console.log(data);
-            console.log(data.emotion);
-            console.log(getKeyWithMaxValue(data.emotion));
             this.setState({
-              age: data.age,
-              gender: data.gender,
-              emotion: getKeyWithMaxValue(data.emotion)
-            // attributes:
-            // id: res.data[0].faceId
-            // ethnicity: ethnicityDetect(data)
+              age: attributes.age,
+              gender: attributes.gender,
+              emotion: getKeyWithMaxValue(attributes.emotion)
             });
             axios.post('https://westcentralus.api.cognitive.microsoft.com/face/v1.0/findsimilars', {
-              'faceId': res.data[0].faceId,
+              'faceId': face.faceId,
               'faceListId': 'test',
-              'maxNumOfCandidatesReturned': 10,
+              'maxNumOfCandidatesReturned': 1,
               'mode': 'matchPerson'
-            }, config2
-            )
+            }, config2)
               .then(res => {
-                console.log(res.data);
                 if (res.data.length === 0) {
-                  axios.post('https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/test/persistedFaces', octet, config)
+                  const {left, top, width, height} = face.faceRectangle;
+                  axios.post(`https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/test/persistedFaces?targetFace=${left},${top},${width},${height}`, octet, config)
                     .then(res => {
-                      console.log(res.data);
                       this.setState({ id: `new user - ${res.data.persistedFaceId}` });
+                      console.log(attributes);
+                      console.log(`new user - ${res.data.persistedFaceId}`);
                       axios.post('https://api.kairos.com/detect', { image: imageSrc }, config3)
                         .then(res => {
                           const e = ethnicityDetect(res.data.images[0].faces[0].attributes);
@@ -122,14 +117,17 @@ class WebcamCapture extends React.Component {
                     });
                 } else {
                   this.setState({ id: `known user - ${res.data[0].persistedFaceId}` });
-                // axios.post('https://api.kairos.com/detect', {image: imageSrc}, config3)
-                //   .then(res => {
-                //     const e = ethnicityDetect(res.data.images[0].faces[0].attributes)
-                //     this.setState({ethnicity: e})
-                //   })
+                  console.log(attributes);
+                  console.log(`known user - ${res.data[0].persistedFaceId}`);
+                  // axios.post('https://api.kairos.com/detect', {image: imageSrc}, config3)
+                  //   .then(res => {
+                  //     const e = ethnicityDetect(res.data.images[0].faces[0].attributes)
+                  //     this.setState({ethnicity: e})
+                  //   })
                 }
               });
-          }
+          } );
+
         });
     } catch (e) {
 
@@ -150,6 +148,7 @@ class WebcamCapture extends React.Component {
           ref={this.setRef}
           screenshotFormat="image/jpeg"
           videoConstraints={videoConstraints}
+          style={{ transform: 'scale(-1, 1)' }}
         />
         <h3>Age: {this.state.age}</h3>
         <h3>Gender: {this.state.gender}</h3>
