@@ -112,6 +112,14 @@ class WebcamCapture extends React.Component {
   componentDidMount() {
     setInterval(this.detect, 800);
   }
+
+
+  reset = () => {
+    axios.get('/api/reset')
+      .then(res => { console.log(res.data); });
+  }
+
+
   detect = () => {
     try {
       const imageSrc = this.webcam.getScreenshot();
@@ -140,7 +148,7 @@ class WebcamCapture extends React.Component {
                       this.setState({ id: `new user - ${res.data.persistedFaceId}` });
                       console.log(attributes);
                       console.log(`new user - ${res.data.persistedFaceId}`);
-                      axios.post('/api/faces', { id: res.data.persistedFaceId, face: face, img: imageSrc }, { json: true })
+                      axios.post('/api/faces', { id: res.data.persistedFaceId, face: face, img: imageSrc, emotion: getKeyWithMaxValue(attributes.emotion) }, { json: true })
                         .then(res => {
                           console.log(res.data);
                           this.setState({ ethnicity: res.data.ethnicity,
@@ -160,7 +168,7 @@ class WebcamCapture extends React.Component {
                   console.log(`known user - ${res.data[0].persistedFaceId}`);
                   axios.get(`/api/faces/${res.data[0].persistedFaceId}`)
                     .then(r => {
-                      const payload = { id: res.data[0].persistedFaceId, face: face };
+                      const payload = { id: res.data[0].persistedFaceId, face: face, emotion: getKeyWithMaxValue(attributes.emotion)};
                       if (r.data.error) {
                         payload.img = imageSrc;
                       }
@@ -207,7 +215,7 @@ class WebcamCapture extends React.Component {
         <h3>ID: {this.state.id}</h3>
         <h3>Emotion: {this.state.emotion}</h3>
         <h3>Ethnicity: {this.state.ethnicity}</h3>
-        <button onClick={this.detect}>Detect image</button>
+        <a className="waves-effect waves-light btn" style={{ marginLeft: '50px' }} onClick={this.reset}>RESET</a>
       </div>
     );
   }
@@ -244,6 +252,21 @@ class Dashboard extends Component {
       } ],
       labels: [
         'Asian', 'Black', 'Hispanic', 'White'
+      ]
+    };
+
+    const emotionData = {
+      datasets: [ {
+        data: [
+          0, 0, 0
+        ],
+        backgroundColor: [
+          color.red, color.yellow, color.blue
+        ],
+        label: 'Gender'
+      } ],
+      labels: [
+        'Happy', 'Neutral', 'Sad'
       ]
     };
     const ageData = {
@@ -320,6 +343,27 @@ class Dashboard extends Component {
         responsive: true
       }
     });
+
+    let graphEmotion = document.getElementById('graphEmotion');
+    this.graphEmotion = new Chart(graphEthnicity, {
+      type: 'pie',
+      data: emotionData,
+      options: {
+        title: {
+          display: true,
+          text: 'Emotion',
+          fontColor: '#ddd',
+          fontStyle: 500,
+          fontSize: 30
+        },
+        legend: {
+          labels: {
+            fontColor: '#ddd'
+          }
+        },
+        responsive: true
+      }
+    });
     this.updateData();
     setInterval(() => {
       this.updateData();
@@ -333,6 +377,7 @@ class Dashboard extends Component {
         let male = 0; let female = 0;
         let asian = 0; let black = 0; let hispanic = 0; let white = 0;
         let ages = [ 0, 0, 0, 0 ];
+        let happy =0; let sad = 0; let neutral = 0;
         faces.forEach(face => {
           if (new Date(face.firstSeen) > this.state.lastUpdate) {
             M.toast({ html: `New visitor: ${Math.round(face.avgAge)} years old ${face.ethnicity} ${face.gender}` }, 10000);
@@ -366,6 +411,15 @@ class Dashboard extends Component {
             case 'white':
               white++; break;
           }
+
+          switch (face.emotion) {
+            case 'happiness':
+              happy++; break;
+            case 'sadness':
+              sad++; break;
+            default:
+              neutral++;
+          }
         });
 
         // console.log(this.graphGender.data.datasets[0].data);
@@ -377,6 +431,9 @@ class Dashboard extends Component {
 
         this.graphEthnicity.data.datasets[0].data = [ asian, black, hispanic, white ];
         this.graphEthnicity.update();
+
+        this.graphEmotion.data.datasets[0].data = [ happy, neutral, sad ];
+        this.graphEmotion.update();
 
         this.setState({ lastUpdate: Date.now() });
       });
@@ -417,10 +474,11 @@ class Dashboard extends Component {
           <br />
           <br />
           <div className="flex-container">
-            <div className="col-small">
-            </div>
             <div className="col">
               <canvas id="graphEthnicity" />
+            </div>
+            <div className="col">
+              <canvas id="graphEmotion" />
             </div>
           </div>
 

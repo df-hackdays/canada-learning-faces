@@ -103,6 +103,7 @@ app.post('/api/faces', (req, res) => {
                       gender: attributes.gender,
                       count: 1,
                       ethnicity: e,
+                      emotion: body.emotion,
                       firstSeen: Date.now()
                     }).save((err, prod) => {
                       if (err) {

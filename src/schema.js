@@ -7,6 +7,7 @@ let schema = new Schema({
   gender: { type: String, required: true },
   count: { type: Number, required: true },
   ethnicity: { type: String, required: true },
+  emotion: { type: String, required: true },
   firstSeen: { type: Date, required: true }
 });
 
