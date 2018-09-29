@@ -50,6 +50,12 @@ app.use((req, res, next) => {
 // RESTful Routes
 // avgAge: attributes.age, gender: attributes.gender
 // Face management
+app.get("/faces", (req, res) => {
+  Schema.find({}, (err, prod) => {
+    console.log(prod);
+    res.json(prod);
+  })
+});
 app.post("/faces", (req, res) => {
   Schema.findOne({id: req.body.id}, (err, prod) => {
     const body = req.body;
@@ -105,7 +111,8 @@ app.post("/faces", (req, res) => {
                       avgAge: attributes.age,
                       gender: attributes.gender,
                       count: 1,
-                      ethnicity: e
+                      ethnicity: e,
+                      firstSeen: Date.now()
                     }).save((err, prod) => {
                       if (err) {
                         console.error(err);

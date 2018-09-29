@@ -6,7 +6,8 @@ let schema = new Schema({
   avgAge: { type: Number, required: true },
   gender: { type: String, required: true },
   count: { type: Number, required: true },
-  ethnicity: {type: String, required: true}
+  ethnicity: {type: String, required: true},
+  firstSeen: {type: Date, required: true}
 });
 
 mongoose.connect('mongodb+srv://test-user:Dominick@cluster0-fgdco.mongodb.net/test?retryWrites=true', (error) => {
