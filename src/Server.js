@@ -6,7 +6,6 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-
 const config3 = {
   headers: {
     app_id: 'e55a0d2a',
@@ -28,7 +27,7 @@ const ethnicityDetect = data => {
   const newData = { asian: data.asian, black: data.black, hispanic: data.hispanic, white: data.white };
   return getKeyWithMaxValue(newData);
 };
-app.use(bodyParser.json({limit: '10mb', extended: true}));
+app.use(bodyParser.json({ limit: '10mb', extended: true }));
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -171,7 +170,6 @@ app.get('/api/reset', (req, res) => {
     }
     );
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

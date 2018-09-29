@@ -115,12 +115,10 @@ class WebcamCapture extends React.Component {
     setInterval(this.detect, 1200);
   }
 
-
   reset = () => {
     axios.get('/api/reset')
       .then(res => { console.log(res.data); });
   }
-
 
   detect = () => {
     try {
@@ -170,7 +168,7 @@ class WebcamCapture extends React.Component {
                   console.log(`known user - ${res.data[0].persistedFaceId}`);
                   axios.get(`/api/faces/${res.data[0].persistedFaceId}`)
                     .then(r => {
-                      const payload = { id: res.data[0].persistedFaceId, face: face, emotion: getKeyWithMaxValue(attributes.emotion)};
+                      const payload = { id: res.data[0].persistedFaceId, face: face, emotion: getKeyWithMaxValue(attributes.emotion) };
                       if (r.data.error) {
                         payload.img = imageSrc;
                       }
@@ -308,7 +306,7 @@ class Dashboard extends Component {
       options: {
         title: {
           display: true,
-          text: 'Emotion',
+          text: 'Age',
           fontColor: '#ddd',
           fontStyle: 500,
           fontSize: 30
@@ -317,7 +315,7 @@ class Dashboard extends Component {
           labels: {
             fontSize: 1,
             boxWidth: 0
-          },
+          }
         },
         scales: {
           xAxes: [
@@ -375,7 +373,7 @@ class Dashboard extends Component {
           labels: {
             fontSize: 1,
             boxWidth: 0
-          },
+          }
         },
         scales: {
           xAxes: [
@@ -409,7 +407,7 @@ class Dashboard extends Component {
         let male = 0; let female = 0;
         let asian = 0; let black = 0; let hispanic = 0; let white = 0;
         let ages = [ 0, 0, 0, 0 ];
-        let happy =0; let sad = 0; let neutral = 0;
+        let happy = 0; let sad = 0; let neutral = 0;
         faces.forEach(face => {
           if (new Date(face.firstSeen) > this.state.lastUpdate) {
             M.toast({ html: `New visitor: ${Math.round(face.avgAge)} years old ${face.ethnicity} ${face.gender}` }, 20000);
@@ -500,14 +498,14 @@ class Dashboard extends Component {
               <canvas id="graphGender" />
             </div>
             <div className="col">
-              <canvas id="graphAge" />
+              <canvas id="graphEthnicity" />
             </div>
           </div>
           <br />
           <br />
           <div className="flex-container">
             <div className="col">
-              <canvas id="graphEthnicity" />
+              <canvas id="graphAge" />
             </div>
             <div className="col">
               <canvas id="graphEmotion" />
