@@ -6,6 +6,8 @@ import Webcam from 'react-webcam';
 import Chart from 'chart.js';
 import M from 'materialize-css';
 
+axios.defaults.baseURL = 'https://df.domh.ca/';
+
 // const config = {
 //   baseURL: 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0',
 //   headers: {
