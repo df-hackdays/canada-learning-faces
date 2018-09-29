@@ -113,10 +113,10 @@ app.post("/faces", (req, res) => {
                   }
                 });
               } else {
-                res.send();
+                // res.send();
               }
             }
-            res.send();
+            // res.send();
           })
           // const e = ethnicityDetect(res.data.images[0].faces.attributes)
         })
